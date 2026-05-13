@@ -22,10 +22,11 @@ ln -s $(pwd)/commands ~/.claude/commands
 
 - **[/diagnose](./commands/diagnose.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → hypothesise → instrument → fix → regression-test.
 - **[/grill-me](./commands/grill-me.md)** — Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree.
+- **[/grill-with-docs](./commands/grill-with-docs.md)** — Grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` and ADRs inline as decisions crystallise.
+- **[/implement](./commands/implement.md)** — Implement a GitHub issue end-to-end with minimal back-and-forth. One confirmation checkpoint, then autonomous implementation and tests.
 - **[/improve-codebase-architecture](./commands/improve-codebase-architecture.md)** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
 - **[/setup-matt-pocock-skills](./commands/setup-matt-pocock-skills.md)** — Per-repo setup: configure the issue tracker, triage label vocabulary, and domain doc layout for the other skills.
 - **[/tdd](./commands/tdd.md)** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
 - **[/to-issues](./commands/to-issues.md)** — Break any plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
 - **[/to-prd](./commands/to-prd.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
 - **[/triage](./commands/triage.md)** — Triage issues through a state machine of triage roles (needs-triage → ready-for-agent etc.).
-- **[/zoom-out](./commands/zoom-out.md)** — Tell the agent to zoom out and map all relevant modules and callers for an unfamiliar section of code.

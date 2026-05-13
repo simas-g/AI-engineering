@@ -71,7 +71,7 @@ When the user states how something works, check whether the code agrees. If you 
 
 ### Update CONTEXT.md inline
 
-When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the CONTEXT.md format below.
 
 Don't couple `CONTEXT.md` to implementation details. Only include terms that are meaningful to domain experts.
 
@@ -83,6 +83,65 @@ Only offer to create an ADR when all three are true:
 2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
 
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+If any of the three is missing, skip the ADR. Use the ADR format below.
 
 </supporting-info>
+
+---
+
+## CONTEXT.md format
+
+```md
+# {Context Name}
+
+{One or two sentence description of what this context is and why it exists.}
+
+## Language
+
+**Order**:
+{A concise description of the term}
+_Avoid_: Purchase, transaction
+
+**Invoice**:
+A request for payment sent to a customer after delivery.
+_Avoid_: Bill, payment request
+
+## Relationships
+
+- An **Order** produces one or more **Invoices**
+- An **Invoice** belongs to exactly one **Customer**
+
+## Flagged ambiguities
+
+- "account" was used to mean both **Customer** and **User** — resolved: these are distinct concepts.
+```
+
+Rules:
+- Be opinionated. When multiple words exist for the same concept, pick the best one and list others as aliases to avoid.
+- Flag conflicts explicitly in "Flagged ambiguities" with a clear resolution.
+- Keep definitions tight — one sentence max. Define what it IS, not what it does.
+- Show relationships with bold term names and cardinality where obvious.
+- Only include terms specific to this project's context, not general programming concepts.
+
+---
+
+## ADR format
+
+ADRs live in `docs/adr/` using sequential numbering: `0001-slug.md`, `0002-slug.md`, etc. Create the directory lazily — only when the first ADR is needed.
+
+Template:
+
+```md
+# {Short title of the decision}
+
+{1-3 sentences: what's the context, what did we decide, and why.}
+```
+
+That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why*.
+
+Only offer an ADR when all three are true:
+1. **Hard to reverse** — the cost of changing your mind later is meaningful
+2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
+3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
+
+Scan `docs/adr/` for the highest existing number and increment by one.

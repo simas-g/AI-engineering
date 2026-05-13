@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
+description: Sets up an `## Agent skills` block in AGENTS.md/CLAUDE.md and `docs/agents/` so the engineering skills know this repo's issue tracker (GitHub or local markdown), triage label vocabulary, and domain doc layout. Run before first use of `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture` — or if those skills appear to be missing context about the issue tracker, triage labels, or domain docs.
 disable-model-invocation: true
 ---
 
@@ -106,16 +106,152 @@ The block:
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
 ```
 
-Then write the three docs files using the seed templates in this skill folder as a starting point:
-
-- [issue-tracker-github.md](./issue-tracker-github.md) — GitHub issue tracker
-- [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
-- [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
-- [triage-labels.md](./triage-labels.md) — label mapping
-- [domain.md](./domain.md) — domain doc consumer rules + layout
-
-For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
+Then write the three docs files using the seed templates below as a starting point.
 
 ### 5. Done
 
 Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later — re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+
+---
+
+## Seed template: GitHub issue tracker
+
+```markdown
+# Issue tracker: GitHub
+
+Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
+
+## Conventions
+
+- **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
+- **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
+- **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
+- **Comment on an issue**: `gh issue comment <number> --body "..."`
+- **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
+- **Close**: `gh issue close <number> --comment "..."`
+
+Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
+
+## When a skill says "publish to the issue tracker"
+
+Create a GitHub issue.
+
+## When a skill says "fetch the relevant ticket"
+
+Run `gh issue view <number> --comments`.
+```
+
+---
+
+## Seed template: GitLab issue tracker
+
+```markdown
+# Issue tracker: GitLab
+
+Issues and PRDs for this repo live as GitLab issues. Use the `glab` CLI for all operations.
+
+## Conventions
+
+- **Create an issue**: `glab issue create --title "..." --description "..."`. Use a heredoc for multi-line descriptions.
+- **Read an issue**: `glab issue view <number> --comments`. Use `-F json` for machine-readable output.
+- **List issues**: `glab issue list --state opened -F json` with appropriate `--label` filters.
+- **Comment on an issue**: `glab issue note <number> --message "..."`. GitLab calls comments "notes".
+- **Apply / remove labels**: `glab issue update <number> --label "..."` / `--unlabel "..."`.
+- **Close**: post a note first with `glab issue note <number> --message "..."`, then `glab issue close <number>`.
+
+Infer the repo from `git remote -v` — `glab` does this automatically when run inside a clone.
+
+## When a skill says "publish to the issue tracker"
+
+Create a GitLab issue.
+
+## When a skill says "fetch the relevant ticket"
+
+Run `glab issue view <number> --comments`.
+```
+
+---
+
+## Seed template: Local markdown issue tracker
+
+```markdown
+# Issue tracker: Local Markdown
+
+Issues and PRDs for this repo live as markdown files in `.scratch/`.
+
+## Conventions
+
+- One feature per directory: `.scratch/<feature-slug>/`
+- The PRD is `.scratch/<feature-slug>/PRD.md`
+- Implementation issues are `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`
+- Triage state is recorded as a `Status:` line near the top of each issue file
+- Comments and conversation history append to the bottom of the file under a `## Comments` heading
+
+## When a skill says "publish to the issue tracker"
+
+Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).
+
+## When a skill says "fetch the relevant ticket"
+
+Read the file at the referenced path.
+```
+
+---
+
+## Seed template: Triage labels
+
+```markdown
+# Triage Labels
+
+The skills speak in terms of five canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
+
+| Canonical role    | Label in this tracker | Meaning                                  |
+| ----------------- | --------------------- | ---------------------------------------- |
+| `needs-triage`    | `needs-triage`        | Maintainer needs to evaluate this issue  |
+| `needs-info`      | `needs-info`          | Waiting on reporter for more information |
+| `ready-for-agent` | `ready-for-agent`     | Fully specified, ready for an AFK agent  |
+| `ready-for-human` | `ready-for-human`     | Requires human implementation            |
+| `wontfix`         | `wontfix`             | Will not be actioned                     |
+
+Edit the right-hand column to match whatever vocabulary you actually use.
+```
+
+---
+
+## Seed template: Domain docs
+
+```markdown
+# Domain Docs
+
+How the engineering skills should consume this repo's domain documentation when exploring the codebase.
+
+## Before exploring, read these
+
+- **`CONTEXT.md`** at the repo root, or
+- **`CONTEXT-MAP.md`** at the repo root if it exists — it points at one `CONTEXT.md` per context.
+- **`docs/adr/`** — read ADRs that touch the area you're about to work in.
+
+If any of these files don't exist, **proceed silently**.
+
+## File structure
+
+Single-context repo (most repos):
+
+```
+/
+├── CONTEXT.md
+├── docs/adr/
+│   ├── 0001-example.md
+└── src/
+```
+
+## Use the glossary's vocabulary
+
+When your output names a domain concept, use the term as defined in `CONTEXT.md`. Don't drift to synonyms the glossary explicitly avoids.
+
+## Flag ADR conflicts
+
+If your output contradicts an existing ADR, surface it explicitly:
+
+> _Contradicts ADR-0007 — but worth reopening because…_
+```
