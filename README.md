@@ -1,12 +1,14 @@
 # AI Engineering Skills
 
-A collection of Claude Code slash commands for real engineering work — not vibe coding.
+A collection of AI agent skills for real engineering work — not vibe coding.
 
 Developing real applications is hard. These skills are designed to be small, easy to adapt, and composable. They work with any model and are based on solid engineering fundamentals. Hack around with them. Make them your own.
 
 ## Install
 
-Copy the skills to your Claude Code global commands folder:
+### Claude Code
+
+Copy the skills to your global commands folder:
 
 ```bash
 cp commands/*.md ~/.claude/commands/
@@ -17,6 +19,24 @@ Or symlink for automatic sync when you pull updates:
 ```bash
 ln -s $(pwd)/commands ~/.claude/commands
 ```
+
+Skills become slash commands: `/grill-me`, `/implement`, `/tdd`, etc.
+
+### Cursor
+
+Copy the skills to your project's commands folder:
+
+```bash
+cp commands/*.md .cursor/commands/
+```
+
+Or symlink for automatic sync:
+
+```bash
+ln -s $(pwd)/commands .cursor/commands
+```
+
+Skills become slash commands in Cursor chat: `/grill-me`, `/implement`, `/tdd`, etc.
 
 ## Skills
 
